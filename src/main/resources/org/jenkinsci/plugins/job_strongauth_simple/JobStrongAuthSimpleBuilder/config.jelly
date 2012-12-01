@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!--
+    Creates a text field that shows the value of the "name" property.
+    When submitted, it will be passed to the corresponding constructor parameter.
+  -->
+  <f:entry title="${%Job Users}" field="jobUsers">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="${%Use global users}" field="useGlobalUsers" >
+    <f:checkbox checked="${instance.useGlobalUsers}"/>
+  </f:entry>
+  <f:entry title="${%Minimum number Of User's Auth}" field="jobMinAuthUserNum"
+           description="${%If empty, need all user's auth}">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="${%Job Expire Time in Hours}" field="jobExpireTimeInHours"
+    description="${%If not set, use 16 hours}">
+    <f:textbox />
+  </f:entry>
+  <!--
+  <f:entry title="${%Build kick by TimerTrigger}" field="buildKickByTimerTrigger" >
+    <f:checkbox checked="${instance.buildKickByTimerTrigger}"/>
+  </f:entry>
+  -->
+</j:jelly>

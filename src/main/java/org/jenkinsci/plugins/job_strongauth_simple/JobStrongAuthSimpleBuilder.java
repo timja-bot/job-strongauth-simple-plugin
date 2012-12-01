@@ -11,7 +11,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
 import hudson.model.Cause;
-import hudson.model.CauseAction;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.User;
@@ -129,6 +128,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
     private final String jobUsers;
     private final boolean useGlobalUsers;
     private final Integer jobMinAuthUserNum;
+    private final boolean useExpireTime;
     private final Integer jobExpireTimeInHours;
     //private final boolean buildKickByTimerTrigger;
 
@@ -138,13 +138,15 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             final String jobUsers
             , final boolean useGlobalUsers
             , final Integer jobMinAuthUserNum
+            , final boolean useExpireTime
             , final Integer jobExpireTimeInHours
-            , final boolean buildKickByTimerTrigger
+//            , final boolean buildKickByTimerTrigger
             )
     {
         this.jobUsers = jobUsers;
         this.useGlobalUsers = useGlobalUsers;
         this.jobMinAuthUserNum = jobMinAuthUserNum;
+        this.useExpireTime = useExpireTime;
         this.jobExpireTimeInHours = jobExpireTimeInHours;
         //this.buildKickByTimerTrigger = buildKickByTimerTrigger;
     }
@@ -160,6 +162,9 @@ public class JobStrongAuthSimpleBuilder extends Builder {
     }
     public Integer getJobMinAuthUserNum() {
         return jobMinAuthUserNum;
+    }
+    public boolean getUseExpireTime() {
+        return useExpireTime;
     }
     public Integer getJobExpireTimeInHours() {
         return jobExpireTimeInHours;
@@ -189,7 +194,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                             if ( 0 == "anonymous".compareToIgnoreCase(userName) )
                             {
                                 build.setResult( Result.ABORTED );
-                                log.println( "reject `anonymous` user's build" );
+                                log.println( "reject `anonymous` user's build. Caused by `" + getDescriptor().getDisplayName() + "`" );
                                 return false;
                             }
                         }
@@ -219,15 +224,15 @@ public class JobStrongAuthSimpleBuilder extends Builder {
 
         // This also shows how you can consult the global configuration of the builder
         final Integer expireTimeInHours = getEffectiveExpireTime( jobExpireTimeInHours, getDescriptor().getExpireTimeInHours() );
-        log.println("expireTimeInHours="+expireTimeInHours+".");
+        LOGGER.finest("expireTimeInHours="+expireTimeInHours+".");
         final Set<String> authUsers = makeAuthUsers( this.jobUsers, this.useGlobalUsers, getDescriptor().getUsers() );
-        log.println( "authUsers=" + authUsers );
+        LOGGER.finest( "authUsers=" + authUsers );
 
 
         build.setResult(Result.SUCCESS);
 
         RunList runList = build.getProject().getBuilds();
-        log.println( "runList=" + runList );
+        LOGGER.finest( "runList=" + runList );
         final int currentNumber = build.getNumber();
 
         final Set<String> listUsers = new HashSet<String>();
@@ -242,7 +247,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             if ( r instanceof Run )
             {
                 final Run run = (Run)r;
-                log.println("run: " + run );
+                LOGGER.finest("run: " + run );
 
                 /*
                 // skip current build
@@ -254,7 +259,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                 */
 
                 final Result result = run.getResult();
-                log.println( " result: " + result );
+                LOGGER.finest( " result: " + result );
 
                 if ( Result.SUCCESS.ordinal == result.ordinal )
                 {
@@ -265,16 +270,17 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                 }
 
                 final Calendar calRun = run.getTimestamp();
+                if ( this.getUseExpireTime() )
                 {
                     final long lDistanceInMillis = calLastBuild.getTimeInMillis() - calRun.getTimeInMillis();
                     final long lDistanceInSeconds = lDistanceInMillis / (1000);
                     final long lDistanceInMinutes = lDistanceInSeconds / (60);
                     final long lDistanceInHours = lDistanceInMinutes / (60);
 
-                    log.println( " lDistanceInHours=" + lDistanceInHours );
+                    LOGGER.finest( " lDistanceInHours=" + lDistanceInHours );
                     if ( expireTimeInHours < lDistanceInHours )
                     {
-                        log.println( " expireTimeInHours=" + expireTimeInHours + ",lDistanceInHours=" + lDistanceInHours );
+                        LOGGER.finest( " expireTimeInHours=" + expireTimeInHours + ",lDistanceInHours=" + lDistanceInHours );
                         break;
                     }
                 }
@@ -290,7 +296,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                     {
                         final Cause.UserCause causeUser = (Cause.UserCause)cause;
                         final String userName = causeUser.getUserName();
-                        log.println( " usercause:" + userName );
+                        LOGGER.finest( " usercause:" + userName );
 
                         if ( null != userName )
                         {
@@ -312,7 +318,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             }
         } // for RunList
 
-        log.println( "listUsers=" + listUsers );
+        LOGGER.finest( "listUsers=" + listUsers );
         
         boolean strongAuth = false;
         {
@@ -329,12 +335,12 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                     }
                 }
             }
-            log.println( "count=" + count );
+            LOGGER.finest( "count=" + count );
 
             if ( null == jobMinAuthUserNum )
             {
                 final int authUserCount = authUsers.size();
-                log.println( "authUserCount=" + authUserCount );
+                LOGGER.finest( "authUserCount=" + authUserCount );
                 if ( authUserCount <= count )
                 {
                     strongAuth = true;
@@ -342,7 +348,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             }
             else
             {
-                log.println( "jobMinAuthUserNum=" + jobMinAuthUserNum );
+                LOGGER.finest( "jobMinAuthUserNum=" + jobMinAuthUserNum );
                 if ( jobMinAuthUserNum.intValue() <= count )
                 {
                     strongAuth = true;
@@ -378,6 +384,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             }
         }
 
+        log.println( "stop build. number of authed people does not satisfy. Caused by `" + getDescriptor().getDisplayName() + "`" );
         build.setResult(Result.NOT_BUILT);
         return false;
     }

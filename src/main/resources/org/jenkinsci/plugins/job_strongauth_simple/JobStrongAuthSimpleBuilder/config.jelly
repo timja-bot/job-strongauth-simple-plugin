@@ -19,13 +19,19 @@
            description="${%If empty, need all user's auth}">
     <f:textbox />
   </f:entry>
-  <f:entry title="${%Job Expire Time in Hours}" field="jobExpireTimeInHours"
-    description="${%If not set, use 16 hours}">
-    <f:textbox />
-  </f:entry>
-  <!--
-  <f:entry title="${%Build kick by TimerTrigger}" field="buildKickByTimerTrigger" >
-    <f:checkbox checked="${instance.buildKickByTimerTrigger}"/>
-  </f:entry>
-  -->
+  <f:advanced>
+    <f:entry title="${%Check expire time}" field="useJobExpireTime" >
+      <f:checkbox checked="${instance.useJobExpireTime}"/>
+    </f:entry>
+    <f:entry title="${%Job Expire Time in Hours}" field="jobExpireTimeInHours"
+      description="${%If not set, use 16 hours}">
+      <f:textbox />
+    </f:entry>
+    <!--
+    <f:entry title="${%Build kick by TimerTrigger}" field="buildKickByTimerTrigger" >
+      <f:checkbox checked="${instance.buildKickByTimerTrigger}"/>
+    </f:entry>
+    -->
+  </f:advanced>
+
 </j:jelly>

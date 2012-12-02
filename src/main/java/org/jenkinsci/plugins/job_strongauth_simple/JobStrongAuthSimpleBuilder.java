@@ -45,6 +45,8 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -145,6 +147,178 @@ public class JobStrongAuthSimpleBuilder extends Builder {
         return set;
     }
 
+
+    private String getUserNameFromCause( final Cause cause )
+    {
+        // UserCause deprecated 1.428
+
+        Class<?> clazz = null;
+        Object retval = null;
+        {
+            Method method = null;
+            try
+            {
+                clazz = Class.forName("hudson.model.Cause$UserIdCause");
+            }
+            catch ( ClassNotFoundException e )
+            {
+
+            }
+
+            if ( null != clazz )
+            {
+                try
+                {
+                    method = cause.getClass().getMethod( "getUserName", new Class<?>[]{} );
+                }
+                catch ( SecurityException e)
+                {
+                    
+                }
+                catch ( NoSuchMethodException e )
+                {
+                    
+                }
+
+                if ( null != method )
+                {
+                    try
+                    {
+                        retval = method.invoke( cause, new Object[]{} );
+                    }
+                    catch ( IllegalAccessException e )
+                    {
+                        
+                    }
+                    catch ( IllegalArgumentException e )
+                    {
+                        
+                    }
+                    catch ( InvocationTargetException e )
+                    {
+                        
+                    }
+                }
+            }
+        }
+        if ( null != retval )
+        {
+            if ( retval instanceof String )
+            {
+                return (String)retval;
+            }
+        }
+
+        {
+            Method method = null;
+            try
+            {
+                clazz = Class.forName("hudson.model.Cause$UserCause");
+            }
+            catch ( ClassNotFoundException e )
+            {
+
+            }
+
+            if ( null != clazz )
+            {
+                try
+                {
+                    method = cause.getClass().getMethod( "getUserName", new Class<?>[]{} );
+                }
+                catch ( SecurityException e)
+                {
+                    
+                }
+                catch ( NoSuchMethodException e )
+                {
+                    
+                }
+
+                if ( null != method )
+                {
+                    try
+                    {
+                        retval = method.invoke( cause, new Object[]{} );
+                    }
+                    catch ( IllegalAccessException e )
+                    {
+                        
+                    }
+                    catch ( IllegalArgumentException e )
+                    {
+                        
+                    }
+                    catch ( InvocationTargetException e )
+                    {
+                        
+                    }
+                }
+            }
+        }
+        if ( null != retval )
+        {
+            if ( retval instanceof String )
+            {
+                return (String)retval;
+            }
+        }
+
+        LOGGER.severe( "unknown cause" );
+        return null;
+    }
+
+    private Cause getCauseFromRun( final Run run )
+    {
+        if ( null == run )
+        {
+            return null;
+        }
+
+        Class<?> clazz = null;
+        {
+            try
+            {
+                clazz = Class.forName("hudson.model.Cause$UserIdCause");
+                if ( null != clazz )
+                {
+                    // getCause since 1.362
+                    final Cause cause = run.getCause( clazz );
+                    if ( null != cause )
+                    {
+                        return cause;
+                    }
+                }
+            }
+            catch ( ClassNotFoundException e )
+            {
+
+            }
+
+        }
+        {
+            try
+            {
+                clazz = Class.forName("hudson.model.Cause$UserCause");
+                if ( null != clazz )
+                {
+                    final Cause cause = run.getCause( clazz );
+                    if ( null != cause )
+                    {
+                        return cause;
+                    }
+                }
+            }
+            catch ( ClassNotFoundException e )
+            {
+
+            }
+
+        }
+
+        return null;
+    }
+
     private final String jobUsers;
     private final boolean useGlobalUsers;
     private final Integer jobMinAuthUserNum;
@@ -199,24 +373,33 @@ public class JobStrongAuthSimpleBuilder extends Builder {
 
         final PrintStream log = listener.getLogger();
         {
-            final Cause cause = build.getCause(Cause.UserCause.class);
-            if ( null != cause )
+            final Cause cause = getCauseFromRun( build );
+            if ( null == cause )
             {
-                if ( cause instanceof Cause.UserCause )
-                {
-                    final Cause.UserCause causeUser = (Cause.UserCause)cause;
-                    final String userName = causeUser.getUserName();
+                log.println( "internal error. getCauseFromRun failed. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                build.setResult(Result.FAILURE);
+                return false;
+            }
+            else
+            {
+                final String userName = getUserNameFromCause(cause);
+                log.println( "userName=" + userName );
 
-                    if ( null != userName )
+                if ( null == userName )
+                {
+                    log.println( "internal error. getUserNameFromCause failed. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                    build.setResult(Result.FAILURE);
+                    return false;
+                }
+                else
+                {
+                    if ( 0 < userName.length() )
                     {
-                        if ( 0 < userName.length() )
+                        if ( 0 == "anonymous".compareToIgnoreCase(userName) )
                         {
-                            if ( 0 == "anonymous".compareToIgnoreCase(userName) )
-                            {
-                                build.setResult( Result.ABORTED );
-                                log.println( "reject `anonymous` user's build. Caused by `" + getDescriptor().getDisplayName() + "`" );
-                                return false;
-                            }
+                            build.setResult( Result.ABORTED );
+                            log.println( "reject `anonymous` user's build. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                            return false;
                         }
                     }
                 }
@@ -305,31 +488,35 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                     }
                 }
 
-                final Cause cause = run.getCause( Cause.UserCause.class );
-                // over 1.428
-                //final Cause cause = run.getCause( hudson.model.Cause.UserIdCause.class );
-
-                if ( null != cause )
+                final Cause cause = getCauseFromRun( run );
+                if ( null == cause )
                 {
-                    //log.println( " cause: " + cause.getShortDescription() );
-                    if ( cause instanceof Cause.UserCause )
+                    log.println( "internal error. getCauseFromRun failed. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                    build.setResult(Result.FAILURE);
+                    return false;
+                }
+                else
+                {
+                    final String userName = getUserNameFromCause(cause);
+                    LOGGER.finest( " usercause:" + userName );
+
+                    if ( null == userName )
                     {
-                        final Cause.UserCause causeUser = (Cause.UserCause)cause;
-                        final String userName = causeUser.getUserName();
-                        LOGGER.finest( " usercause:" + userName );
-
-                        if ( null != userName )
+                        log.println( "internal error. getUserNameFromCause failed. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                        build.setResult(Result.FAILURE);
+                        return false;
+                    }
+                    else
+                    {
+                        if ( 0 < userName.length() )
                         {
-                            if ( 0 < userName.length() )
+                            if ( 0 != "anonymous".compareToIgnoreCase(userName) )
                             {
-                                if ( 0 != "anonymous".compareToIgnoreCase(userName) )
-                                {
-                                    listUsers.add( userName );
+                                listUsers.add( userName );
 
-                                    if ( authUsers.contains( userName ) )
-                                    {
-                                        calLastBuild = run.getTimestamp();
-                                    }
+                                if ( authUsers.contains( userName ) )
+                                {
+                                    calLastBuild = run.getTimestamp();
                                 }
                             }
                         }

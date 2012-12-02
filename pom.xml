@@ -3,12 +3,21 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.409</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>1.409</version>
+    <!--<version>1.447</version>-->
   </parent>
+
+  <!--
+  <parent>
+    <groupId>org.jvnet.hudson.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>1.324</version>
+  </parent>
+  -->
 
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>job-strongauth-simple-plugin</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <developers>

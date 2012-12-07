@@ -322,7 +322,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
     private final String jobUsers;
     private final boolean useGlobalUsers;
     private final Integer jobMinAuthUserNum;
-    private final boolean useExpireTime;
+    private final boolean useJobExpireTime;
     private final Integer jobExpireTimeInHours;
     //private final boolean buildKickByTimerTrigger;
 
@@ -332,7 +332,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
             final String jobUsers
             , final boolean useGlobalUsers
             , final Integer jobMinAuthUserNum
-            , final boolean useExpireTime
+            , final boolean useJobExpireTime
             , final Integer jobExpireTimeInHours
 //            , final boolean buildKickByTimerTrigger
             )
@@ -340,7 +340,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
         this.jobUsers = jobUsers;
         this.useGlobalUsers = useGlobalUsers;
         this.jobMinAuthUserNum = jobMinAuthUserNum;
-        this.useExpireTime = useExpireTime;
+        this.useJobExpireTime = useJobExpireTime;
         this.jobExpireTimeInHours = jobExpireTimeInHours;
         //this.buildKickByTimerTrigger = buildKickByTimerTrigger;
     }
@@ -357,8 +357,8 @@ public class JobStrongAuthSimpleBuilder extends Builder {
     public Integer getJobMinAuthUserNum() {
         return jobMinAuthUserNum;
     }
-    public boolean getUseExpireTime() {
-        return useExpireTime;
+    public boolean getUseJobExpireTime() {
+        return useJobExpireTime;
     }
     public Integer getJobExpireTimeInHours() {
         return jobExpireTimeInHours;
@@ -473,7 +473,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
                 }
 
                 final Calendar calRun = run.getTimestamp();
-                if ( this.getUseExpireTime() )
+                if ( this.getUseJobExpireTime() )
                 {
                     final long lDistanceInMillis = calLastBuild.getTimeInMillis() - calRun.getTimeInMillis();
                     final long lDistanceInSeconds = lDistanceInMillis / (1000);

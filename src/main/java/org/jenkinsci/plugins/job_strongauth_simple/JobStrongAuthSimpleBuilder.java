@@ -373,6 +373,15 @@ public class JobStrongAuthSimpleBuilder extends Builder {
 
         final PrintStream log = listener.getLogger();
         {
+            final String jenkinsVersion = build.getHudsonVersion();
+            if ( 0 < "1.374".compareTo(jenkinsVersion) )
+            {
+                log.println( "jenkins version old. need 1.374 over. Caused by `" + getDescriptor().getDisplayName() + "`" );
+                build.setResult(Result.FAILURE);
+                return false;
+            }
+        }
+        {
             final Cause cause = getCauseFromRun( build );
             if ( null == cause )
             {
@@ -434,6 +443,7 @@ public class JobStrongAuthSimpleBuilder extends Builder {
 
         build.setResult(Result.SUCCESS);
 
+        // 1.374 457315f40fb803391f5367d1ac3d50459a6f5020
         RunList runList = build.getProject().getBuilds();
         LOGGER.finest( "runList=" + runList );
         final int currentNumber = build.getNumber();

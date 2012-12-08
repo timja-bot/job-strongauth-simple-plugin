@@ -17,7 +17,7 @@
 
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>job-strongauth-simple</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <packaging>hpi</packaging>
   <name>Job StrongAuthSimple Plugin</name>
 
@@ -43,6 +43,7 @@
     <connection>scm:git:ssh://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <tag>job-strongauth-simple-0.4</tag>
   </scm>
 
   <build>

@@ -23,6 +23,10 @@
 
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Job+StrongAuthSimple+Plugin</url>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <licenses>
     <license>
       <name>The MIT license</name>
@@ -78,5 +82,5 @@
       <url>http://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
-
+  
 </project>

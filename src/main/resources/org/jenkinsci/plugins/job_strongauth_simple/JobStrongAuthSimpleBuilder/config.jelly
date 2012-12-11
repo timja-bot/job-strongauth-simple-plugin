@@ -14,6 +14,8 @@
   </f:entry>
   <f:entry title="${%Use global users}" field="useGlobalUsers" >
     <f:checkbox checked="${instance.useGlobalUsers}" name="JobStrongAuthSimplePlugin.useGlobalUsers" />
+    <!--<f:textbox value="${descriptor.getUsers()}" readonly="true" description="${%Global users}" style="font-style: italic; border-style: none;"/>-->
+    <div style="font-style: italic;">${descriptor.getUsers()}</div>
   </f:entry>
   <f:entry title="${%Minimum number Of User's Auth}" field="jobMinAuthUserNum"
            description="${%If empty, need all user's auth}">

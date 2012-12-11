@@ -104,6 +104,29 @@ public class JobStrongAuthSimpleBuilder extends Builder {
         if ( null == jobUsers && null == globalUsers )
         {
             return Collections.emptySet();
+            /*
+            {
+                Set<String> users = new HashSet<String>();
+
+                final Collection<User> userAll = User.getAll();
+                if ( null != userAll )
+                {
+                    for ( final User user : userAll )
+                    {
+                        if ( null != user )
+                        {
+                            final String dispName = user.getDisplayName();
+                            if ( null != dispName )
+                            {
+                                users.add( dispName );
+                            }
+                        }
+                    } // for userAll
+                }
+                
+                return users;
+            }
+            */
         }
 
         Set<String> set = new HashSet<String>();

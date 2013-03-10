@@ -1,7 +1,7 @@
 /**
  * The MIT License
  * 
- * Copyright (C) 2012 KK.Kon
+ * Copyright (C) 2012-2013 Kiyofumi Kondoh
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ import java.util.logging.Logger;
  * When a build is performed, the {@link #perform(AbstractBuild, Launcher, BuildListener)}
  * method will be invoked. 
  *
- * @author KK.Kon
+ * @author Kiyofumi Kondoh
  */
 public class JobStrongAuthSimpleBuilder extends Builder {
 

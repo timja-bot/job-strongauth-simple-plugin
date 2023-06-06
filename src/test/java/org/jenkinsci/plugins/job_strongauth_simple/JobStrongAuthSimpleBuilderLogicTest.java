@@ -4,10 +4,10 @@
  */
 package org.jenkinsci.plugins.job_strongauth_simple;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
 import hudson.model.Cause;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -211,7 +211,7 @@ public class JobStrongAuthSimpleBuilderLogicTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( "alice" );
+                    input.setValue( "alice" );
                 }
             }
 
@@ -310,7 +310,7 @@ public class JobStrongAuthSimpleBuilderLogicTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( "charlie" );
+                    input.setValue( "charlie" );
                 }
             }
 

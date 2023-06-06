@@ -4,10 +4,10 @@
  */
 package org.jenkinsci.plugins.job_strongauth_simple;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleProject;
 import org.jvnet.hudson.test.HudsonTestCase;
 
@@ -48,7 +48,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( inputValue.toString() );
+                    input.setValue( inputValue.toString() );
                 }
             }
 
@@ -76,7 +76,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue.toString(), value );
                 }
@@ -93,7 +93,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue.toString(), value );
                 }
@@ -120,7 +120,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( inputValue );
+                    input.setValue( inputValue );
                 }
             }
 
@@ -148,7 +148,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue, value );
                 }
@@ -165,7 +165,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue, value );
                 }
@@ -209,7 +209,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( inputValue );
+                    input.setValue( inputValue );
                 }
             }
 
@@ -237,7 +237,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue, value );
                 }
@@ -254,7 +254,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue, value );
                 }
@@ -284,7 +284,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 if ( e instanceof HtmlInput )
                 {
                     final HtmlInput input = (HtmlInput)e;
-                    input.setValueAttribute( inputValue.toString() );
+                    input.setValue( inputValue.toString() );
                 }
             }
 
@@ -312,7 +312,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue.toString(), value );
                 }
@@ -329,7 +329,7 @@ public class JobStrongAuthSimpleBuilderTest extends HudsonTestCase {
                 {
                     final HtmlInput input = (HtmlInput)e;
 
-                    final String value = input.getValueAttribute();
+                    final String value = input.getValue();
                     assertNotNull( value );
                     assertEquals( inputValue.toString(), value );
                 }
